@@ -92,7 +92,7 @@ def link_reviews_to_ids():
     product_reviews_df['rid'] = product_reviews_df['Review_Text'].str.strip().map(text_to_id_map)
 
     # 4. Save the updated file
-    product_reviews_df.to_csv("product_reviews.csv", index=False)
+    product_reviews_df.to_csv("../data/product_reviews.csv", index=False)
     
     # Check how many matches we found
     matches = product_reviews_df['rid'].notna().sum()

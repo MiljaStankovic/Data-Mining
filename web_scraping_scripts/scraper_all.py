@@ -85,13 +85,13 @@ def scrape_all():
             except: continue
 
         # --- SAVE SEPARATE FILES ---
-        pd.DataFrame(products_data).to_csv("products.csv", index=False)
+        pd.DataFrame(products_data).to_csv("../data/products.csv", index=False)
         
         df_rev = pd.DataFrame(reviews_data)
         df_rev['Date'] = pd.to_datetime(df_rev['Date'], errors='coerce').fillna(pd.Timestamp('2023-01-01'))
-        df_rev.to_csv("reviews.csv", index=False)
+        df_rev.to_csv("../data/reviews.csv", index=False)
         
-        pd.DataFrame(testimonials_data).to_csv("testimonials.csv", index=False)
+        pd.DataFrame(testimonials_data).to_csv("../data/testimonials.csv", index=False)
 
         print(f"DONE! Saved products.csv, reviews.csv, and testimonials.csv with unique IDs.")
 
