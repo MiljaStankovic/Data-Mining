@@ -1,4 +1,13 @@
+#Web Scraping
 selenium
+
+#Data Analysis
 pandas
 
+#Web Dashboard
 streamlit
+
+#NLP & AI
+transformers 
+torch 
+tf-keras
