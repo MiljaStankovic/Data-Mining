@@ -10,8 +10,8 @@ import time
 
 MODEL_OPTIONS = {
     "DistilBERT (Fast)": "distilbert-base-uncased-finetuned-sst-2-english",
-    "RoBERTa (Accurate)": "cardiffnlp/twitter-roberta-base-sentiment-latest",
-    "BERT (Standard)": "nlptown/bert-base-multilingual-uncased-sentiment"
+    # "RoBERTa (Accurate)": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+    # "BERT (Standard)": "nlptown/bert-base-multilingual-uncased-sentiment"
 }
 # Set page configuration
 st.set_page_config(page_title="Data Mining Dashboard", layout="wide")
