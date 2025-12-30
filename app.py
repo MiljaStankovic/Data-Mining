@@ -20,8 +20,10 @@ st.set_page_config(page_title="Data Mining Dashboard", layout="wide")
 # We cache the model so it doesn't reload every time you move the slider
 @st.cache_resource
 def load_sentiment_model(model_name):
-    # This will load the model selected from the dropdown
-    return pipeline("sentiment-analysis", model=MODEL_OPTIONS[model_name])
+    # Added framework="pt" to force PyTorch
+    return pipeline("sentiment-analysis", 
+                    model=MODEL_OPTIONS[model_name], 
+                    framework="pt")
 
 # --- DATA LOADING HELPERS ---
 @st.cache_data
