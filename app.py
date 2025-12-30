@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
-from transformers import pipeline
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
+# from transformers import pipeline
+# from wordcloud import WordCloud
+# import matplotlib.pyplot as plt
 import subprocess
 import sys
 import os
@@ -10,8 +10,8 @@ import time
 
 MODEL_OPTIONS = {
     "DistilBERT (Fast)": "distilbert-base-uncased-finetuned-sst-2-english",
-    # "RoBERTa (Accurate)": "cardiffnlp/twitter-roberta-base-sentiment-latest",
-    # "BERT (Standard)": "nlptown/bert-base-multilingual-uncased-sentiment"
+    "RoBERTa (Accurate)": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+    "BERT (Standard)": "nlptown/bert-base-multilingual-uncased-sentiment"
 }
 # Set page configuration
 st.set_page_config(page_title="Data Mining Dashboard", layout="wide")
@@ -26,7 +26,7 @@ def load_sentiment_model(model_name):
     # Force PyTorch and use a smaller version of the model if possible
     return pipeline("sentiment-analysis", 
                     model=MODEL_OPTIONS[model_name], 
-                    framework="pt")
+                    framework="pt",device=-1)
 # --- DATA LOADING HELPERS ---
 @st.cache_data
 def load_data(filename):
@@ -135,6 +135,8 @@ elif page == "Reviews":
 
         # --- WORD CLOUD (Only when Month selected) ---
         if show_wordcloud and not filtered_df.empty:
+            from wordcloud import WordCloud
+            import matplotlib.pyplot as plt
             st.subheader(f"Word Cloud for {selected_period}")
             text = " ".join(review for review in filtered_df.Review_Text.astype(str))
             wordcloud = WordCloud(width=800, height=300, background_color='black').generate(text)
