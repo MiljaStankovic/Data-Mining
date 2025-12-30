@@ -3,6 +3,10 @@ import pandas as pd
 from transformers import pipeline
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import subprocess
+import sys
+import os
+import time
 
 MODEL_OPTIONS = {
     "DistilBERT (Fast)": "distilbert-base-uncased-finetuned-sst-2-english",
@@ -33,7 +37,50 @@ def load_data(filename):
 # --- SIDEBAR NAVIGATION ---
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to:", ["Products", "Reviews", "Testimonials"])
+# 1. Spacer to push tools to the bottom
+st.sidebar.markdown("<br>" * 3, unsafe_allow_html=True) 
+# st.sidebar.divider()
+st.sidebar.subheader("⚙️ Run Web-Scraper")
 
+# Create two columns for the buttons
+col_vis, col_head = st.sidebar.columns(2)
+
+status_placeholder = st.sidebar.empty()
+
+def execute_scrapers(headless):
+    scripts = [
+        "web_scraping_scripts/scraper_all.py",
+        "web_scraping_scripts/scraper_product_reviews.py"
+    ]
+    try:
+        for script in scripts:
+            if os.path.exists(script):
+                mode_text = "Headless" if headless else "Visible"
+                status_placeholder.warning(f"⏳ {mode_text}: {os.path.basename(script)}")
+                
+                # Build command
+                cmd = [sys.executable, script]
+                if headless:
+                    cmd.append("--headless")
+                
+                subprocess.run(cmd, check=True)
+                st.toast(f"✅ {os.path.basename(script)} done!")
+            else:
+                st.sidebar.error(f"Missing: {script}")
+        
+        status_placeholder.success("🎉 Data Updated!")
+        st.balloons()
+        time.sleep(1)
+        st.rerun()
+    except Exception as e:
+        status_placeholder.error(f"❌ Error: {e}")
+
+# Button logic
+if col_vis.button("Visible", use_container_width=True, help="Watch the browser scrape"):
+    execute_scrapers(headless=False)
+
+if col_head.button("Headless", use_container_width=True, help="Scrape in the background"):
+    execute_scrapers(headless=True)
 st.title(f"Scraped Data: {page}")
 
 # --- PAGE LOGIC ---
