@@ -5,14 +5,20 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 import time
+import os
+import sys
 
-def get_driver():
+def get_driver(headless=False): # ADD PARAMETER
     options = Options()
-    # options.add_argument("--headless") 
+    if headless:
+        options.add_argument("--headless")
+        # Recommended flags for headless stability
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
     return webdriver.Chrome(options=options)
 
-def scrape_all():
-    driver = get_driver()
+def scrape_all(headless_mode=False): # ADD PARAMETER
+    driver = get_driver(headless=headless_mode)
     base_url = "https://web-scraping.dev"
     
     products_data = []
@@ -21,7 +27,7 @@ def scrape_all():
 
     try:
         # --- 1. PRODUCTS (pid) ---
-        print("--- Scraping Products ---")
+        print(f"--- Scraping Products (Headless={headless_mode}) ---")
         p_id_counter = 1
         for page_num in range(1, 7):
             driver.get(f"{base_url}/products?page={page_num}")
@@ -85,18 +91,29 @@ def scrape_all():
             except: continue
 
         # --- SAVE SEPARATE FILES ---
-        pd.DataFrame(products_data).to_csv("../data/products.csv", index=False)
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        data_folder = os.path.join(script_dir, "..", "data")
+
+        if not os.path.exists(data_folder):
+            os.makedirs(data_folder)
+
+        products_path = os.path.join(data_folder, "products.csv")
+        testimonials_path = os.path.join(data_folder, "testimonials.csv")
+        reviews_path = os.path.join(data_folder, "reviews.csv")
+        
+        pd.DataFrame(products_data).to_csv(products_path, index=False)
+        pd.DataFrame(testimonials_data).to_csv(testimonials_path, index=False)
         
         df_rev = pd.DataFrame(reviews_data)
         df_rev['Date'] = pd.to_datetime(df_rev['Date'], errors='coerce').fillna(pd.Timestamp('2023-01-01'))
-        df_rev.to_csv("../data/reviews.csv", index=False)
-        
-        pd.DataFrame(testimonials_data).to_csv("../data/testimonials.csv", index=False)
+        df_rev.to_csv(reviews_path, index=False)
 
-        print(f"DONE! Saved products.csv, reviews.csv, and testimonials.csv with unique IDs.")
+        print(f"Success! Saved to: {data_folder}")
 
     finally:
         driver.quit()
 
 if __name__ == "__main__":
-    scrape_all()
+    # Check if "--headless" was passed as a command line argument
+    is_headless = "--headless" in sys.argv
+    scrape_all(headless_mode=is_headless)
