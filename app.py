@@ -38,7 +38,7 @@ def load_data(filename):
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to:", ["Products", "Reviews", "Testimonials"])
 # 1. Spacer to push tools to the bottom
-st.sidebar.markdown("<br>" * 3, unsafe_allow_html=True) 
+# st.sidebar.markdown("<br>" * 2, unsafe_allow_html=True) 
 # st.sidebar.divider()
 st.sidebar.subheader("⚙️ Run Web-Scraper")
 
@@ -82,8 +82,7 @@ if col_vis.button("Visible", use_container_width=True, help="Watch the browser s
 if col_head.button("Headless", use_container_width=True, help="Scrape in the background"):
     execute_scrapers(headless=True)
 st.title(f"Scraped Data: {page}")
-
-# --- PAGE LOGIC ---
+st.sidebar.error("⚠️ **Remote Scraping Only Works Locally(not Render)**")
 
 if page == "Products":
     st.header("🛒 Product Catalog")
