@@ -275,30 +275,30 @@ elif page == "Reviews":
             # This is where your line was incorporated
             st.info(f"No reviews found for {selected_period}.")
             
-elif page == "Products with Reviews":
-    st.header("🔗 Linked Products & Reviews")
+# elif page == "Products with Reviews":
+#     st.header("🔗 Linked Products & Reviews")
     
-    df_p = load_data("data/products.csv")
-    df_r = load_data("data/reviews.csv")
-    df_map = load_data("data/product_reviews.csv")
+#     df_p = load_data("data/products.csv")
+#     df_r = load_data("data/reviews.csv")
+#     df_map = load_data("data/product_reviews.csv")
 
-    if not df_map.empty and not df_p.empty and not df_r.empty:
-        merged_p = pd.merge(df_map, df_p, on="pid", how="inner")
-        final_df = pd.merge(merged_p, df_r, on="rid", how="inner", suffixes=('', '_global'))
+#     if not df_map.empty and not df_p.empty and not df_r.empty:
+#         merged_p = pd.merge(df_map, df_p, on="pid", how="inner")
+#         final_df = pd.merge(merged_p, df_r, on="rid", how="inner", suffixes=('', '_global'))
         
-        text_col = "Review_Text" if "Review_Text" in final_df.columns else "Review_Text_global"
+#         text_col = "Review_Text" if "Review_Text" in final_df.columns else "Review_Text_global"
         
-        # --- NLP IMPLEMENTATION (Optional Toggle) ---
-        if st.checkbox("Apply Sentiment Analysis to these reviews"):
-            with st.spinner('Processing...'):
-                results = sentiment_pipeline(final_df[text_col].tolist())
-                final_df['Sentiment'] = [res['label'] for res in results]
+#         # --- NLP IMPLEMENTATION (Optional Toggle) ---
+#         if st.checkbox("Apply Sentiment Analysis to these reviews"):
+#             with st.spinner('Processing...'):
+#                 results = sentiment_pipeline(final_df[text_col].tolist())
+#                 final_df['Sentiment'] = [res['label'] for res in results]
 
-        # Define display columns
-        possible_cols = ["Title", "Price", "Date", text_col, "Stars", "Sentiment"]
-        display_cols = [col for col in possible_cols if col in final_df.columns]
+#         # Define display columns
+#         possible_cols = ["Title", "Price", "Date", text_col, "Stars", "Sentiment"]
+#         display_cols = [col for col in possible_cols if col in final_df.columns]
         
-        st.write("Displaying product details alongside their matched reviews.")
-        st.dataframe(final_df[display_cols], use_container_width=True, hide_index=True)
-    else:
-        st.warning("Data files missing or empty. Please run your scrapers first.")
+#         st.write("Displaying product details alongside their matched reviews.")
+#         st.dataframe(final_df[display_cols], use_container_width=True, hide_index=True)
+#     else:
+#         st.warning("Data files missing or empty. Please run your scrapers first.")
